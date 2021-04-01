@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import classes from "./NetworkTable.module.css";
-import { Table, TableProps } from "../../components/Table";
 import { BinIcon } from "../../components/Icons/BinIcon";
+import { Table, TableProps } from "../../components/Table";
 import { getStatusColor } from "../../helpers/getStatusColor";
 import { NetworkRequest } from "../../hooks/useNetworkMonitor";
+import classes from "./NetworkTable.module.css";
 
 export type NetworkTableProps = {
   data: NetworkRequest[];
@@ -71,12 +71,18 @@ export const NetworkTable = (props: NetworkTableProps) => {
         id: "query",
         Header: "Query / Mutation",
         accessor: (row) => {
-          const { operation, operationName } = row.request.primaryOperation;
+          const { operation } = row.request.primaryOperation;
+
+          const x = JSON.parse(row.response?.body || "");
+
+          const data = x!.data;
+
+          const ops = Object.keys(data).join(", ");
 
           return (
             <Query
               queryType={operation}
-              operationName={operationName}
+              operationName={ops}
               totalQueries={row.request.body.length}
             />
           );
